@@ -5,7 +5,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "users")
 @Getter
 @Setter
 @ToString
