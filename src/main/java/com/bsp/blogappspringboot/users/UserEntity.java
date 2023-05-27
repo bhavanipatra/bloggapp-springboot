@@ -8,8 +8,10 @@ import javax.persistence.*;
 @Entity(name = "users")
 @Getter
 @Setter
+@Builder
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

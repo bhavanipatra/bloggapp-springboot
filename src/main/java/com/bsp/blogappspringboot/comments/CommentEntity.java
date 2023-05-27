@@ -13,7 +13,9 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@Builder
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
