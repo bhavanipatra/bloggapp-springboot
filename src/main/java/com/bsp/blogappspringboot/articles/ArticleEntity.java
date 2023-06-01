@@ -40,7 +40,7 @@ public class ArticleEntity {
 
     @ManyToOne
     @JoinColumn(name = "authorId", nullable = false)
-    private UserEntity Author;
+    private UserEntity author;
 
     // TODO: add tags
 
