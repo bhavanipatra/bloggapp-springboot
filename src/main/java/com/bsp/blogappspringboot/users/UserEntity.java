@@ -8,10 +8,11 @@ import javax.persistence.*;
 @Entity(name = "users")
 @Getter
 @Setter
-@Builder
 @ToString
+@Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -21,6 +22,10 @@ public class UserEntity {
     @Column(nullable = false)
     @NonNull
     private String username;
+
+    @Column(nullable = false)
+    @NonNull
+    private String password;
 
     @Column(nullable = false)
     @NonNull

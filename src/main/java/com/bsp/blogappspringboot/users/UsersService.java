@@ -1,7 +1,9 @@
 package com.bsp.blogappspringboot.users;
 
 import com.bsp.blogappspringboot.users.dtos.CreateUserRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -10,18 +12,20 @@ import java.util.Optional;
 @Service
 public class UsersService {
     private UsersRepository usersRepository;
+    private ModelMapper modelMapper;
+    private PasswordEncoder passwordEncoder;
 
-    public UsersService(UsersRepository usersRepository) {
+    public UsersService(UsersRepository usersRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
+        this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserEntity createUser(CreateUserRequest u) {
-          var newUser = UserEntity.builder()
-                  .username(u.getUsername())
-                  .email(u.getEmail())
-                  //.password(u.getPassword()) TODO: encrypt p
-                  .build();
-          return usersRepository.save(newUser);
+        UserEntity newUser = modelMapper.map(u, UserEntity.class);
+        newUser.setPassword(passwordEncoder.encode(u.getPassword()));
+        // TODO: encrypt and save password as well
+        return usersRepository.save(newUser);
     }
 
     public UserEntity getUser(Long id) {
@@ -33,7 +37,9 @@ public class UsersService {
 
     public UserEntity loginUser(String userName, String password) {
         var user = this.getUser(userName);
-        // TODO: match password
+        if(!passwordEncoder.matches(password, user.getPassword())) {
+            throw new InvalidCredentialsException(userName);
+        }
         return user;
     }
     public static class UserNotFoundException extends IllegalArgumentException {
@@ -43,6 +49,12 @@ public class UsersService {
 
         public UserNotFoundException(Long id) {
             super("User with id: " + id + " not found");
+        }
+    }
+
+    public static class InvalidCredentialsException extends IllegalArgumentException {
+        public InvalidCredentialsException(String username) {
+            super("The credentials entered for user: " + username + " is incorrect");
         }
     }
 
