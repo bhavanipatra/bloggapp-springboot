@@ -43,6 +43,7 @@ public class UsersController {
 
     @ExceptionHandler({
             UsersService.UserNotFoundException.class,
+            UsersService.UserAlreadyExistsException.class,
             UsersService.InvalidCredentialsException.class
     })
     ResponseEntity<ErrorResponse> handleUserExceptions(Exception ex) {
@@ -52,6 +53,9 @@ public class UsersController {
         if (ex instanceof UsersService.UserNotFoundException) {
             message = ex.getMessage();
             status = HttpStatus.NOT_FOUND;
+        } else if (ex instanceof UsersService.UserAlreadyExistsException) {
+            message = ex.getMessage();
+            status = HttpStatus.CONFLICT;
         } else if (ex instanceof UsersService.InvalidCredentialsException) {
             message = ex.getMessage();
             status = HttpStatus.UNAUTHORIZED;

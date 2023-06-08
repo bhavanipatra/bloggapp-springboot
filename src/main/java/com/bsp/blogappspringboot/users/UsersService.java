@@ -2,10 +2,8 @@ package com.bsp.blogappspringboot.users;
 
 import com.bsp.blogappspringboot.users.dtos.CreateUserRequest;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
@@ -22,12 +20,18 @@ public class UsersService {
     }
 
     public UserEntity createUser(CreateUserRequest u) {
+        if(userAlreadyExists(u.getUsername())) {
+            throw new UserAlreadyExistsException(u.getUsername());
+        }
         UserEntity newUser = modelMapper.map(u, UserEntity.class);
         newUser.setPassword(passwordEncoder.encode(u.getPassword()));
-        // TODO: encrypt and save password as well
         return usersRepository.save(newUser);
     }
 
+    public boolean userAlreadyExists(String userName) {
+        var user = usersRepository.findByUsername(userName);
+        return user.isPresent();
+    }
     public UserEntity getUser(Long id) {
         return usersRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
@@ -55,6 +59,12 @@ public class UsersService {
     public static class InvalidCredentialsException extends IllegalArgumentException {
         public InvalidCredentialsException(String username) {
             super("The credentials entered for user: " + username + " is incorrect");
+        }
+    }
+
+    public static class UserAlreadyExistsException extends IllegalArgumentException {
+        public UserAlreadyExistsException(String username) {
+            super("User with username: " + username + " already exists");
         }
     }
 

@@ -1,4 +1,5 @@
 blog_app.mv.db
+blog_app.trace.db
 HELP.md
 .gradle
 build/

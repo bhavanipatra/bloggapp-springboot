@@ -1,15 +1,30 @@
 package com.bsp.blogappspringboot.articles;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.bsp.blogappspringboot.users.UserEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/articles")
 public class ArticlesController {
+    private ArticlesService articlesService;
+
+    public ArticlesController(ArticlesService articlesService) {
+        this.articlesService = articlesService;
+    }
 
     @GetMapping("")
-    public String getArticles() {
-        return "Articles";
+    public Iterable<ArticleEntity> getArticles() {
+        return articlesService.getAllArticles();
+    }
+
+    @GetMapping("{id}")
+    public String getArticleById(@PathVariable("id") String id) {
+        return "get article with id: " + id;
+    }
+
+    @PostMapping("")
+    public String createArticle(@AuthenticationPrincipal UserEntity user) {
+        return "create article called by " + user.getUsername();
     }
 }
