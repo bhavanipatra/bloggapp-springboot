@@ -15,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor(force = true)
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
 

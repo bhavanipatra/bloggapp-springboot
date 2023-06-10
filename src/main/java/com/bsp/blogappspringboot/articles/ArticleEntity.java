@@ -16,9 +16,10 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 public class ArticleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
 

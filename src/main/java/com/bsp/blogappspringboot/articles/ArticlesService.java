@@ -54,6 +54,10 @@ public class ArticlesService {
         }
         return articlesRepository.save(article);
     }
+
+    public void deleteArticle(Long articleId) {
+        articlesRepository.deleteById(articleId);
+    }
     static class ArticleNotFoundException extends IllegalArgumentException {
         public ArticleNotFoundException (String slug) {
             super("Article: " + slug + " not found");
