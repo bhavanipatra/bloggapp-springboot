@@ -6,6 +6,8 @@ import com.bsp.blogappspringboot.users.UsersRepository;
 import com.bsp.blogappspringboot.users.UsersService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ArticlesService {
 
@@ -27,6 +29,15 @@ public class ArticlesService {
             throw new ArticleNotFoundException(slug);
         }
         return article;
+    }
+
+    public Iterable<ArticleEntity> getArticlesOfAuthor(Long authorId) {
+        var author = usersRepository.findById(authorId).orElseThrow(() -> new UsersService.UserNotFoundException(authorId));
+        var articles = articlesRepository.findByAuthor(Optional.ofNullable(author));
+        if (articles == null) {
+            throw new ArticleNotFoundException(authorId, author.getUsername());
+        }
+        return articles;
     }
     public ArticleEntity createArticle(CreateArticleRequest a, Long authorId) {
         var author = usersRepository.findById(authorId).orElseThrow(() -> new UsersService.UserNotFoundException(authorId));
@@ -60,13 +71,13 @@ public class ArticlesService {
     }
     static class ArticleNotFoundException extends IllegalArgumentException {
         public ArticleNotFoundException (String slug) {
-            super("Article: " + slug + " not found");
+            super("Article with slug: " + slug + " not found");
         }
         public ArticleNotFoundException (Long id) {
             super("Article with id: " + id + " not found");
         }
-
+        public ArticleNotFoundException (Long authorId, String username) {
+            super("For author with userId: " + authorId + "& username: " + username + ". No articles were found!");
+        }
     }
-
-
 }

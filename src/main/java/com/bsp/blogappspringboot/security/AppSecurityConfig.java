@@ -35,7 +35,7 @@ public class AppSecurityConfig {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users", "/users/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/articles", "/articles/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/articles", "/articles/*", "articles/user/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/articles", "/articles/*").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/articles", "/articles/update/*").permitAll()
                 .anyRequest().authenticated();
