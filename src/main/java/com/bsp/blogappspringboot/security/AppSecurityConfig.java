@@ -38,7 +38,7 @@ public class AppSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/articles", "/articles/*", "articles/user/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/articles", "/articles/*").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/articles", "/articles/update/*").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
         http.addFilterBefore(jwtAuthenticationFilter, AnonymousAuthenticationFilter.class);
         return http.build();
     }

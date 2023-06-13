@@ -4,12 +4,14 @@ import com.bsp.blogappspringboot.articles.dtos.CreateArticleRequest;
 import com.bsp.blogappspringboot.articles.dtos.UpdateArticleRequest;
 import com.bsp.blogappspringboot.common.dtos.ErrorResponse;
 import com.bsp.blogappspringboot.users.UserEntity;
+import com.bsp.blogappspringboot.users.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/articles")
@@ -50,19 +52,20 @@ public class ArticlesController {
     }
 
     @GetMapping("/user/{authorId}")
-    public ResponseEntity<Iterable<ArticleEntity>> getArticlesOfAuthor(@PathVariable("authorId") Long authorId) {
+    public ResponseEntity<List<ArticleEntity>> getArticlesOfAuthor(@PathVariable("authorId") Long authorId) {
         var articles = articlesService.getArticlesOfAuthor(authorId);
         return ResponseEntity.ok(articles);
     }
 
     @ExceptionHandler({
-            ArticlesService.ArticleNotFoundException.class
+            ArticlesService.ArticleNotFoundException.class,
+            UsersService.UserNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleArticleExceptions(Exception ex) {
         String message;
         HttpStatus status;
 
-        if(ex instanceof ArticlesService.ArticleNotFoundException) {
+        if(ex instanceof ArticlesService.ArticleNotFoundException || ex instanceof UsersService.UserNotFoundException) {
             message = ex.getMessage();
             status = HttpStatus.NOT_FOUND;
         } else {

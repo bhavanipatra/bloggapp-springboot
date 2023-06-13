@@ -15,6 +15,7 @@ import java.util.Date;
 @ToString
 @Builder
 @RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 public class CommentEntity {
     @Id
